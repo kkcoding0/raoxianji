@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}绕线机网络化检测与诊断系统{% endblock %}
+
+{% block page_content %}
+    <table class="table table-bordered" id="tab">
+
+    </table>
+    <script type="text/javascript" src="/static/jquery.js"></script>
+        <script>
+               setInterval(loaddata,1000);
+              function loaddata(){
+                  var html = '    <tr>\n' +
+                      '        <th>用户ID</th>\n' +
+                      '        <th>数据名称</th>\n' +
+                      '        <th>数据值</th>\n' +
+                      '        <th>数据类型</th>\n' +
+                      '        <th>数据质量</th>\n' +
+                      '        <th>时间</th>\n' +
+                      '    </tr>';
+                  $.ajax({
+                   url: '/test',
+                   type: 'post',
+                   dataType: 'json',
+                    async:true,
+                   success: function (data) { //方法中传入的参数data为后台获取的数据
+                       console.log(data);
+                       console.log(123);
+                       for (var i = 0; i < data.length; i++)  //data.data指的是数组，数组里是8个对象，i为数组的索引
+                       {
+                           console.log(234);
+                           var user_id = data[i].user_id;
+                           var tag_id = data[i].tag_id;
+                           var tag_value = data[i].tag_value;
+                           var tag_type = data[i].tag_type;
+                           var tag_quality = data[i].tag_quality;
+                           var value_time = data[i].value_time;
+                           html += '<tr><td>' + user_id + '</td>' +
+                               '<td>' + tag_id + '</td>' +
+                               '<td>' + tag_value + '</td>' +
+                               '<td>' + tag_type + '</td>' +
+                               '<td>' + tag_quality + '</td>' +
+                               '<td>' + value_time + '</td></tr>';
+                           {#$("#tab").append(html)#}
+                           {#html = '';#}
+                       }
+                       document.getElementById("tab").innerHTML= html;
+                   }
+               })
+              }
+        </script>
+
+{% endblock %}
