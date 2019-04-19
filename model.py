@@ -3,7 +3,7 @@ import json
 import pymysql
 from flask import request
 import traceback
-from flask import flash
+from flask import flash,session
 
 @app.route('/test',methods=['GET','POST'])
 def datashow():
@@ -16,7 +16,7 @@ def datashow():
     jsondata = []
     for i in u:
         tem = {}
-        tem['user_id'] = i[0]
+        tem['user_id'] = session.get('username')
         tem['tag_id'] = i[1]
         tem['tag_value'] = i[2]
         tem['tag_type'] = i[3]
@@ -27,13 +27,18 @@ def datashow():
     return json.dumps(jsondata)
     # return render_template('index.html',u=u)
 
+@app.route('/yonghuming',methods=['GET','POST'])
+def yonghuming():
+   jsondata = []
+   tem = {}
+   tem['username'] = session.get('username')
+   jsondata.append(tem)
+   return json.dumps(jsondata)
+
 @app.route('/log',endpoint='log')
 def log():
-    # 查询用户名及密码是否匹配及存在
     db = pymysql.connect("localhost", "root", "123456", "opcdata")
-    # 使用cursor()方法获取操作游标
     cursor = db.cursor()
-    # SQL 查询语句
     sql = "select * from user where username=" + repr(request.args.get('username')) + " and password=" + repr(request.args.get('password'))
     print(sql)
     try:
@@ -42,7 +47,9 @@ def log():
         results = cursor.fetchall()
         print(request.args.get('password'))
         if len(results) == 1:
-            flash('登录成功')
+            # flash('登录成功')
+            username = request.args.get('username')
+            session['username'] = username
             return render_template('index.html')
         else:
             flash('用户名或密码不正确')
@@ -58,11 +65,8 @@ def log():
 
 @app.route('/regist',endpoint='regist')
 def regist():
-    # 查询用户名及密码是否匹配及存在
     db = pymysql.connect("localhost", "root", "123456", "opcdata")
-    # 使用cursor()方法获取操作游标
     cursor = db.cursor()
-    # SQL 查询语句
     sql = "insert into user(username,password,email,phone) values" +\
           '('+repr(request.args.get('username'))+','+\
           repr(request.args.get('password'))+','+\
@@ -82,3 +86,11 @@ def regist():
         return render_template('index0.html')
     # 关闭数据库连接
     db.close()
+
+# @user.before_request
+# def before_user():
+#     if 'username' in session:
+#         return '已登录'
+#         pass
+#     else:
+#         return render_template('index0.html')

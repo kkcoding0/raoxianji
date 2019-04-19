@@ -15,28 +15,24 @@
 # # 执行命令。
 # os.system(command)
 
-def creattime(arr,limit0,flag):
+def creattime(arr,limit0):
     l_hour = []
     hour = 0
     for i in range(len(arr)):
-        for j in arr[i:]:
+        for j in arr[i+1:]:
             tem1 = arr[i]*10 + j
             tem2 = j*10 +arr[i]
             if tem1<limit0:
                 l_hour.append(tem1)
             if tem2 < limit0:
                 l_hour.append(tem2)
-    if not l_hour:
-        flag = False
-        return 0,[],False
+    hour = max(l_hour)
+    if hour>=10:
+        arr.pop(arr.index(hour%10))
+        arr.pop(arr.index(hour//10))
     else:
-        hour = max(l_hour)
-        if hour>=10:
-            arr.pop(arr.index(hour%10))
-            arr.pop(arr.index(hour//10))
-        else:
-            arr.pop(arr.index(hour))
-        return hour,arr,flag
+        arr.pop(arr.index(hour))
+    return hour,arr
 
 if __name__ == '__main__':
     arr_str = list(input())
@@ -45,13 +41,10 @@ if __name__ == '__main__':
     for i in range(len(arr_str)):
         if i%2==0:
             arr.append(int(arr_str[i]))
-    flag = True
-    hour,arr,flag= creattime(arr,24,flag)
-    minute,arr,flag= creattime(arr,60,flag)
-    second,arr,flag= creattime(arr,60,flag)
-    if not flag:
-        print('invalid')
-    else:
-        if second == 0:
-            second = '00'
-        print(str(hour)+':'+str(minute)+':'+str(second))
+    print(arr)
+    hour,arr = creattime(arr,24)
+    minute,arr = creattime(arr,60)
+    second,arr = creattime(arr,60)
+    if second == 0:
+        second = '00'
+    print(str(hour)+':'+str(minute)+':'+str(second))

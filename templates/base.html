@@ -15,6 +15,25 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="/">绕线机网络化检测与诊断系统</a></li>
+                <li>
+                    <a>管理员：<b id="b_id"></b>您好,感谢登陆使用！</a>
+                    <script type="text/javascript" src="/static/jquery.js"></script>
+                    <script>
+                    function loaddata(){
+                    $.ajax({
+                    url: '/yonghuming',
+                    type: 'post',
+                    dataType: 'json',
+                    async:true,
+                    success: function (data) { //方法中传入的参数data为后台获取的数据
+                       console.log(data)
+                       document.getElementById("b_id").innerHTML= data[0].username;
+                   }
+               })
+              }
+                loaddata()
+                    </script>
+                </li>
             </ul>
         </div>
     </div>
@@ -26,3 +45,4 @@
   {% block page_content %}{% endblock %}
 </div>
 {% endblock %}
+
